@@ -1,6 +1,8 @@
 module
 
-namespace Lean4Gists.Data.List
+namespace Lean4Gists
+namespace Data
+namespace List
 
 public def append.{u} {α : Type u} : List α → List α → List α
   | [] => id
@@ -69,5 +71,7 @@ public theorem reverse_eq.{u} {α : Type u} (xs ys : List α) : (xs = ys) ↔ (x
       intros
       trivial
 
-end Lean4Gists.Data.List
+end List
+end Data
+end Lean4Gists
 
