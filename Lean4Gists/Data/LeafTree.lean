@@ -11,10 +11,10 @@ public inductive LeafTree.{u} (α : Type u) : Type u
 
 namespace LeafTree
 
-public def map.{u} {α β : Type u} (f : α -> β) : LeafTree α -> LeafTree β
-  | .Empty => LeafTree.Empty
-  | .Leaf a => LeafTree.Leaf $ f a
-  | .Branch l r => LeafTree.Branch (l.map f) (r.map f)
+public def map.{u} {α β : Type u} (f : α → β) : LeafTree α → LeafTree β
+  | Empty => Empty
+  | Leaf a => Leaf $ f a
+  | Branch l r => Branch (l.map f) (r.map f)
 
 instance : Functor LeafTree where
   map := LeafTree.map

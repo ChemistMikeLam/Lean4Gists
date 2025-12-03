@@ -15,12 +15,12 @@ namespace Prime
 public theorem two_prime : Prime 2 := by
   refine ⟨by decide, ?_⟩
   intro
-  | 0 | 1 | _ + 2 => intros; contradiction
+  | 0 | 1 | _ + 2 => simp +arith
 
 public theorem three_prime : Prime 3 := by
   refine ⟨by decide, ?_⟩
   intro
-  | 0 | 1 | _ + 3 => intros; contradiction
+  | 0 | 1 | _ + 3 => simp +arith
   | 2 => simp; exact Div.not_div 2 3 1
 
 public theorem four_not_prime : ¬ Prime 4 :=
@@ -29,7 +29,7 @@ public theorem four_not_prime : ¬ Prime 4 :=
 public theorem five_prime : Prime 5 := by
   refine ⟨by decide, ?_⟩
   intro
-  | 0 | 1 | _ + 5 => intros; contradiction
+  | 0 | 1 | _ + 5 => simp +arith
   | n@h : 2 | n@h : 3 | n@h : 4 =>
     simp
     have h1 := Div.not_div n 5 (5/n) (by simp [h]) (by simp [h])
