@@ -71,6 +71,23 @@ public theorem reverse_eq.{u} {α : Type u} (xs ys : List α) : (xs = ys) ↔ (x
       intros
       trivial
 
+public def insert_undup.{u} {α : Type u} [BEq α] (x : α) : List α → List α
+  | [] => [x]
+  | xs@(x' :: xs') =>
+    if x == x' then xs else x' :: insert_undup x xs'
+
+public def collate.{u} {α : Type u} [BEq α] : List α → List α :=
+  let rec go (acc : List α) : List α → List α
+    | [] => acc
+    | x :: xs => go (insert_undup x acc) xs
+  go []
+
+public def subseqs.{u} {α : Type u} : List α → List (List α)
+  | [] => [[]]
+  | x :: xs =>
+    let rem : List (List α) := subseqs xs
+    rem.map (x :: ·) ++ rem
+
 end List
 end Data
 end Lean4Gists
