@@ -13,9 +13,12 @@ package Lean4Gists where
   reservoir := false
   leanOptions := #[⟨`experimental.module, true⟩]
 
+@[default_target]
 lean_lib Lean4Gists where
   globs := #[`Lean4Gists.*]
 
+/-
 @[default_target]
 lean_exe lean4gists where
   root := `Main
+-/
