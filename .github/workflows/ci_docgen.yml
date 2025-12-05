@@ -10,9 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: leanprover/lean-action@v1
-      - id: restore_doc
+      - name: Checkput repo
+        uses: actions/checkout@v6
+      - name: Run lean CI
+        uses: leanprover/lean-action@v1
+      - name: Update lean for docs
+        working-directory: ${{ github.workspace }}/docs
+        run: lake update
+      - name: Restore cached docs
+        id: restore_doc
         uses: actions/cache/restore@v4
         with:
           path: ${{ github.workspace }}/docs/.lake
@@ -22,10 +28,9 @@ jobs:
         id: build_doc
         if: ${{ github.ref_name == 'main' && steps.restore_doc.outputs.cache-hit != 'true' }}
         working-directory: ${{ github.workspace }}/docs
-        run: |
-          lake update
-          lake build Lean4Gists:docs
-      - uses: actions/cache/save@v4
+        run: lake build Lean4Gists:docs
+      - name: Save doc cache
+        uses: actions/cache/save@v4
         if: ${{ steps.restore_doc.outputs.cache-hit != 'true' }}
         with:
           path: ${{ github.workspace }}/docs/.lake
