@@ -12,15 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: leanprover/lean-action@v1
+      - id: restore_doc
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}/docs/.lake
+          key: doc-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('docs/lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: doc-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('docs/lake-manifest.json') }}
       - name: Build docs
-        id: doc
-        if: ${{ github.ref_name == 'main' }}
+        id: build_doc
+        if: ${{ github.ref_name == 'main' && steps.restore_doc.outputs.cache-hit != 'true' }}
         working-directory: ${{ github.workspace }}/docs
         run: |
           lake update
           lake build Lean4Gists:docs
+      - uses: actions/cache/save@v4
+        if: ${{ steps.restore_doc.outputs.cache-hit != 'true' }}
+        with:
+          path: ${{ github.workspace }}/docs/.lake
+          key: ${{ steps.restore_doc.outputs.cache-primary-key }}
       - name: Package docs as artifact
-        if: ${{ success() }}
+        if: ${{ steps.build_doc.outcome == 'success' }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ github.workspace }}/docs/.lake/build/doc/
