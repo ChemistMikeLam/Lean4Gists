@@ -1,4 +1,4 @@
-[![Lean Action CI](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/lean_action_ci.yml)
+[![CI and Docs](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/ci_docgen.yml/badge.svg)](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/ci_docgen.yml)
 
 # Lean 4 Gists
 
