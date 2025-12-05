@@ -1,0 +1,35 @@
+name: Generate documentations and deploy on Github Pages
+
+on:
+  page_build:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+      - name: Build docs
+        working-directory: ./docs
+        run: |
+          lake update
+          lake build Lean4Gists:docs
+      - name: Package docs as artifact
+        id: pack
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./docs/.lake/build/
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
