@@ -1,20 +1,22 @@
-name: Generate documentations and deploy on Github Pages
+name: CI and Doc build
 
 on:
   page_build:
   push:
-    branch:
-      main
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: leanprover/lean-action@v1
-        with:
-          auto-config: false
+  docs:
+    needs: ci
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Build docs
         working-directory: ./docs
         run: |
@@ -24,9 +26,9 @@ jobs:
         id: pack
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./docs/.lake/build/
+          path: ./docs/.lake/build/doc/
   deploy:
-    needs: build
+    needs: docs
     permissions:
       pages: write
       id-token: write
