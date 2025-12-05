@@ -7,28 +7,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: leanprover/lean-action@v1
-  docs:
-    needs: ci
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Build docs
-        working-directory: ./docs
+        id: doc
+        if: ${{ github.ref_name == 'main' }}
+        working-directory: ${{ github.workspace }}/docs
         run: |
           lake update
           lake build Lean4Gists:docs
       - name: Package docs as artifact
-        id: pack
+        if: ${{ success() }}
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./docs/.lake/build/doc/
+          path: ${{ github.workspace }}/docs/.lake/build/doc/
   deploy:
-    needs: docs
+    if: ${{ github.ref_name == 'main' }}
+    needs: build
     permissions:
       pages: write
       id-token: write
