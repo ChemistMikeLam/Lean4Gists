@@ -12,36 +12,51 @@ jobs:
     steps:
       - name: Checkput repo
         uses: actions/checkout@v6
-      - name: Run lean CI
+      - name: Install lean environment
         uses: leanprover/lean-action@v1
-      - name: Update lean for docs
-        working-directory: ${{ github.workspace }}/docs
-        run: lake update
-      - name: Restore cached docs
-        id: restore_doc
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+      - name: Restore cache
+        id: restore_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
-          path: ${{ github.workspace }}/docs/.lake
-          key: doc-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('docs/lake-manifest.json') }}-${{ github.sha }}
-          restore-keys: doc-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('docs/lake-manifest.json') }}
+          path: |
+            ${{ github.workspace }}/.lake
+            ${{ github.workspace }}/docs/.lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-${{ github.ref_name }}-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-main-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-
+      - name: Build ${{ github.repository }}
+        if: ${{ steps.restore_cache.outputs.cache-hit != 'true' }}
+        run: lake build
       - name: Build docs
         id: build_doc
-        if: ${{ github.ref_name == 'main' && steps.restore_doc.outputs.cache-hit != 'true' }}
+        if: ${{ (github.ref_name == 'main' || github.event_name == 'workflow_dispatch') && steps.restore_cache.outputs.cache-hit != 'true' }}
         working-directory: ${{ github.workspace }}/docs
         run: lake build Lean4Gists:docs
-      - name: Save doc cache
+      - name: Save cache
+        if: ${{ steps.restore_cache.outputs.cache-hit != 'true' }}
+        continue-on-error: true
         uses: actions/cache/save@v4
-        if: ${{ steps.restore_doc.outputs.cache-hit != 'true' }}
         with:
-          path: ${{ github.workspace }}/docs/.lake
-          key: ${{ steps.restore_doc.outputs.cache-primary-key }}
+          path: |
+            ${{ github.workspace }}/.lake
+            ${{ github.workspace }}/docs/.lake
+          key: ${{ steps.restore_cache.outputs.cache-primary-key }}
       - name: Package docs as artifact
         if: ${{ steps.build_doc.outcome == 'success' }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ github.workspace }}/docs/.lake/build/doc/
   deploy:
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'main' || github.event_name == 'workflow_dispatch' }}
     needs: build
     permissions:
       pages: write
