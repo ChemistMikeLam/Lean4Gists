@@ -9,6 +9,8 @@ Authors:
 
 module
 
+public import Lean4Gists.NumTheory.Div
+
 /-!
 # Number Theory
 
@@ -16,5 +18,10 @@ Defs and theorems about number theory.
 
 > [!NOTE]
 > This is not meant to be a complete representation of the theories.
+
+## Components
+
+- `Lean4Gists.NumTheory.Div`:
+  Defs and theorems about divisibility of Nats.
 -/
 
