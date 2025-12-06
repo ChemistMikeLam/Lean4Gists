@@ -10,6 +10,7 @@ Authors:
 module
 
 public import Lean4Gists.Misc
+public import Lean4Gists.NumTheory
 
 /-!
 # Root module
@@ -19,6 +20,8 @@ Imports all components of the library.
 
 ## Components
 
+- `Lean4Gists.NumTheory`:
+  Defs and theorems about number theory,
 - `Lean4Gists.Misc`:
   Miscellaneous defs that does not fit elsewhere.
 -/
