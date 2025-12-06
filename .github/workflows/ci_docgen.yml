@@ -1,0 +1,79 @@
+name: CI and Doc build
+
+on:
+  page_build:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      skip_get_cache:
+        description: 'Skip cache retrieval for a clean build'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkput repo
+        uses: actions/checkout@v6
+      - name: Install lean environment
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+      - name: Restore cache
+        id: restore_cache
+        if: ${{ github.event_name != 'workflow_dispatch' || !(inputs.skip_get_cache) }}
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.lake
+            ${{ github.workspace }}/docs/.lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-${{ github.ref_name }}-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-main-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('**/lake-manifest.json') }}-
+      - name: Build ${{ github.repository }}
+        if: ${{ steps.restore_cache.outcome == 'skipped' || steps.restore_cache.outputs.cache-hit != 'true' }}
+        run: lake build
+      - name: Build docs
+        id: build_doc
+        if: ${{ (github.ref_name == 'main' || github.event_name == 'workflow_dispatch') && (steps.restore_cache.outcome == 'skipped' || steps.restore_cache.outputs.cache-hit != 'true') }}
+        working-directory: ${{ github.workspace }}/docs
+        run: lake build Lean4Gists:docs
+      - name: Save cache
+        if: ${{ steps.restore_cache.outcome == 'skipped' || steps.restore_cache.outputs.cache-hit != 'true' }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.lake
+            ${{ github.workspace }}/docs/.lake
+          key: ${{ steps.restore_cache.outputs.cache-primary-key }}
+      - name: Package docs as artifact
+        if: ${{ steps.build_doc.outcome == 'success' }}
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ github.workspace }}/docs/.lake/build/doc/
+  deploy:
+    if: ${{ github.ref_name == 'main' || github.event_name == 'workflow_dispatch' }}
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

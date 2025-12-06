@@ -1,3 +1,5 @@
+[![CI and Docs](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/ci_docgen.yml/badge.svg)](https://github.com/ChemistMikeLam/Lean4Gists/actions/workflows/ci_docgen.yml)
+
 # [Lean 4 Gists](https://github.com/ChemistMikeLam/Lean4Gists)
 
 This repository contains code that document my explorations in [Lean 4](https://github.com/leanprover/lean4).
