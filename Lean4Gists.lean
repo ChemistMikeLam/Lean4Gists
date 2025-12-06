@@ -9,3 +9,10 @@ Authors:
 
 module
 
+/-!
+# Root module
+
+Root module of the library Lean4Gists.
+Imports all components of the library.
+-/
+
