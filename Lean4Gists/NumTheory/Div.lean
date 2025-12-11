@@ -18,7 +18,7 @@ The main definition in this module is the structure `Lean4Gists.NumTheory.Div`.
 It carries the proof of existence of a Nat which is the quotient.
 
 We also proves several handy theorems about divisibility that would help in proofs.
-Of special note is a helper theorem (`Lean4Gists.NumTheory.Div.not_div`) which states that if the multiples of `a` "skips over" `b` then `b` is not dicisible by `a`.
+Of special note is a helper theorem (`Lean4Gists.NumTheory.Div.not_div`) which states that if the multiples of `a` "skips over" `b` then `b` is not divisible by `a`.
 -/
 
 namespace Lean4Gists.NumTheory
