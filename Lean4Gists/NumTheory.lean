@@ -10,6 +10,7 @@ Authors:
 module
 
 public import Lean4Gists.NumTheory.Div
+public import Lean4Gists.NumTheory.Prime
 
 /-!
 # Number Theory
@@ -23,5 +24,7 @@ Defs and theorems about number theory.
 
 - `Lean4Gists.NumTheory.Div`:
   Defs and theorems about divisibility of Nats.
+- `Lean4Gists.NumTheory.Prime`:
+  Defs and theorems about primality of Nats.
 -/
 
