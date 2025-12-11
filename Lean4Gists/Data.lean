@@ -9,13 +9,21 @@ Authors:
 
 module
 
+public import Lean4Gists.Data.Queue
+
 /-!
 # Data structures
 
 This part of the library contains various data structres.
 
+Each component corresponds to an abstract data structure.
+In each component you can find a `Class` submodule, which documents the general interface of the abstract data structure.
+Other submodules of the components are generally concrete implementations of the interface.
+Refer to the documentations of the respective components and submodules for more information, including big-O complexities and perculiarities.
+
 ## Components
 
-(Currently empty.)
+- `Lean4Gists.Data.Queue`:
+  FIFO queues.
 -/
 
