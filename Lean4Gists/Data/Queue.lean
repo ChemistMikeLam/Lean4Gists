@@ -10,6 +10,7 @@ Authors:
 module
 
 public import Lean4Gists.Data.Queue.Class
+public import Lean4Gists.Data.Queue.BiListQ
 
 /-!
 # FIFO queues
@@ -22,6 +23,8 @@ The interface can be found in `Lean4Gists.Data.Queue.Class`.
 
 ## Implementations
 
-(Currently empty.)
+- `Lean4Gists.Data.Queue.BiListQ`:
+  Standard implementation by 2 lists.
+  O(1) enqueue, amortised O(1) dequeue.
 -/
 
