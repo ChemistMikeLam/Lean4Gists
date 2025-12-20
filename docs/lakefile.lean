@@ -9,5 +9,5 @@ package doc where
 
 require Lean4Gists from "../"
 
-require "leanprover" / «doc-gen4» @ git "v4.25.1"
+require "leanprover" / «doc-gen4» @ git "v4.26.0"
 
