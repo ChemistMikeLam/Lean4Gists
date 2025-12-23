@@ -9,6 +9,8 @@ Authors:
 
 module
 
+public import Lean4Gists.Util.List
+
 /-!
 # Utilities
 
@@ -19,6 +21,7 @@ Therefore, submodules should not import anything outside of this part of the lib
 
 ## Components
 
-(Currently empty)
+- `Lean4Gists.Util.List`:
+  Utilities related to `List`.
 -/
 
