@@ -10,6 +10,7 @@ Authors:
 module
 
 public import Lean4Gists.Util.List
+public import Lean4Gists.Util.Vec
 
 /-!
 # Utilities
@@ -23,5 +24,7 @@ Therefore, submodules should not import anything outside of this part of the lib
 
 - `Lean4Gists.Util.List`:
   Utilities related to `List`.
+- `Lean4Gists.Util.Vec`:
+  Utilities related to length-indexed vectors.
 -/
 
