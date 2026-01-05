@@ -11,6 +11,7 @@ module
 
 public import Lean4Gists.Util.List
 public import Lean4Gists.Util.Vec
+public import Lean4Gists.Util.WVec
 
 /-!
 # Utilities
@@ -26,5 +27,7 @@ Therefore, submodules should not import anything outside of this part of the lib
   Utilities related to `List`.
 - `Lean4Gists.Util.Vec`:
   Utilities related to length-indexed vectors.
+- `Lean4Gists.Util.WVec`:
+  Utilities related to wrapped length-indexed vectors.
 -/
 
